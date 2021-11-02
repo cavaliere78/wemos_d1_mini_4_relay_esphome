@@ -2,7 +2,7 @@
 Modulo a 4 Relè controllato tramite wemos d1 mini con esphome<BR>
 <img width="947" alt="Quattro" src="https://user-images.githubusercontent.com/52451350/139861683-6fcd0996-449f-4c2f-950e-7e6817e1b596.png">
 
-# Il modulo espone 5 ingressi a pulsante attivi bassi:<BR>
+Il modulo espone 5 ingressi a pulsante attivi bassi:<BR>
 <BR>
 Pulsante_Uno    (GPIO1 TX) (Deve essere HIGH durante il boot)<BR>
 Pulsante_Due    (GPIO3 RX) (Questo input si può riprogrammare come interruttore gestendo on_press e on_release )<BR>
@@ -22,7 +22,7 @@ Pulsante_Cinque
   Durata impulsi:<BR>
   Impulso breve da 0,1 a 1 secondi<BR>
   Impulso lungo da 1 a 2 secondi<BR>
-  Pause tra due impulsi da 0,1 a 0,4 secondi<BR>
+  Pausa tra due impulsi da 0,1 a 0,4 secondi<BR>
 
 Su ogni relè è possibile attivare un timer indipendente con durata compresa tra 1 e 100000 secondi
 I timer possono essere cotrollati tramite i segunti switch:
@@ -31,12 +31,14 @@ I timer possono essere cotrollati tramite i segunti switch:
   Timer Tre
   Timer Quattro
   
-  Qaundo un timer è attivo il corrispondente relè si disattiva automaticamnte trascorso il periodo di tempo indicato dal corrispondete parametro time in secondi:<BR>
-  I paramtri time esposti sono: <BR>
+  Quando un timer è attivo il corrispondente relè si disattiva automaticamnte trascorso il periodo di tempo indicato dal corrispondete parametro time in secondi:<BR>
+  I parametri time esposti sono: <BR>
   Time_Uno (default 600 secondi)<BR>
   Time_Due (default 600 secondi)<BR>
   Time_Tre (default 600 secondi)<BR>
   Time_Quattro (default 600 secondi)<BR>
   
   Il delay per i quattro timer può essere modificato e sopravvive al reboot del dispositivo<BR>
-  
+  ![image](https://user-images.githubusercontent.com/52451350/139875093-b0911925-8f3a-4c7e-9ba2-22e44333935d.png)
+  ![image](https://user-images.githubusercontent.com/52451350/139874761-4494f311-770d-469d-8806-48dedeb12a06.png)
+
