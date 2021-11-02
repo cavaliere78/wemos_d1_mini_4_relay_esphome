@@ -4,13 +4,13 @@ Modulo a 4 Relè controllato tramite wemos d1 mini con esphome<BR>
 
 # Il modulo espone 5 ingressi a pulsante attivi bassi:<BR>
 <BR>
-- Pulsante_Uno    (GPIO1 TX) (Deve essere HIGH durante il boot)<BR>
-- Pulsante_Due    (GPIO3 RX) (Questo input si può riprogrammare come interruttore gestendo on_press e on_release )<BR>
-- Pulsante_Tre    (GPIO5 D1) (Questo input si può riprogrammare come interruttore gestendo on_press e on_release )<BR>
-- Pulsante_Quatro (GPIO0 D3) (Deve essere HIGH durante il boot)<BR>
+Pulsante_Uno    (GPIO1 TX) (Deve essere HIGH durante il boot)<BR>
+Pulsante_Due    (GPIO3 RX) (Questo input si può riprogrammare come interruttore gestendo on_press e on_release )<BR>
+Pulsante_Tre    (GPIO5 D1) (Questo input si può riprogrammare come interruttore gestendo on_press e on_release )<BR>
+Pulsante_Quatro (GPIO0 D3) (Deve essere HIGH durante il boot)<BR>
   La pressione di uno di questi pulsanti attiva o disattiva il corrispondentre relè<BR>
 <BR>
-- Pulsante_Cinque
+Pulsante_Cinque
   Il timing delgi impulsi generati azionando il pulsante determina la variazione dello stato dei relè come indicato nel seguente schema:<BR>
   Un impulso breve  => toggle relè Uno<BR>
   Due impulsi brevi => toggle relè Due<BR>
@@ -24,3 +24,19 @@ Modulo a 4 Relè controllato tramite wemos d1 mini con esphome<BR>
   Impulso lungo da 1 a 2 secondi<BR>
   Pause tra due impulsi da 0,1 a 0,4 secondi<BR>
 
+Su ogni relè è possibile attivare un timer indipendente con durata compresa tra 1 e 100000 secondi
+I timer possono essere cotrollati tramite i segunti switch:
+  Timer Uno
+  Timer Due
+  Timer Tre
+  Timer Quattro
+  
+  Qaundo un timer è attivo il corrispondente relè si disattiva automaticamnte trascorso il periodo di tempo indicato dal corrispondete parametro time in secondi:<BR>
+  I paramtri time esposti sono: <BR>
+  Time_Uno (default 600 secondi)<BR>
+  Time_Due (default 600 secondi)<BR>
+  Time_Tre (default 600 secondi)<BR>
+  Time_Quattro (default 600 secondi)<BR>
+  
+  Il delay per i quattro timer può essere modificato e sopravvive al reboot del dispositivo<BR>
+  
