@@ -18,12 +18,12 @@ esphome:
   name: quattro001
   platform: ESP8266
   board: d1_mini
-  on_boot:
-    then:
-      - switch.turn_on: timer1
-      - switch.turn_on: timer2
-      - switch.turn_on: timer3
-      - switch.turn_on: timer4
+#  on_boot:
+#    then:
+#      - switch.turn_on: timer1
+#      - switch.turn_on: timer2
+#      - switch.turn_on: timer3
+#      - switch.turn_on: timer4
   
 wifi:
   ssid: "SSID"
