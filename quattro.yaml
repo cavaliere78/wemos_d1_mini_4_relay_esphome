@@ -1,0 +1,425 @@
+substitutions:
+  name1: 'Uno'
+  name2: 'Due'
+  name3: 'Tre'
+  name4: 'Quattro'
+  name5: 'Cinque'
+  
+  id1: 'id1'
+  id2: 'id2'
+  id3: 'id3'  
+  id4: 'id4'  
+  work_time1: '600'
+  work_time2: '600'
+  work_time3: '600'  
+  work_time4: '600'
+  plug_name: 'quattro001'
+esphome:
+  name: quattro001
+  platform: ESP8266
+  board: d1_mini
+  on_boot:
+    then:
+      - switch.turn_on: timer1
+      - switch.turn_on: timer2
+      - switch.turn_on: timer3
+      - switch.turn_on: timer4
+  
+wifi:
+  ssid: "SSID"
+  password: "wifipassword"
+  fast_connect: on  
+  manual_ip:
+    # Set this to the IP of the ESP
+    static_ip: 192.168.1.xxx
+    # Set this to the IP address of the router. Often ends with .1
+    gateway: 192.168.1.1
+    # The subnet of the network. 255.255.255.0 works for most home networks.
+    subnet: 255.255.255.0  
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "fallback001"
+    password: "passwordfallback"
+
+captive_portal:
+
+# Enable logging
+logger:
+  hardware_uart: uart1
+  baud_rate: 0
+
+# Enable Home Assistant API
+api:
+  password: 'apipassword'
+
+ota:
+  password: 'otapassword'
+
+web_server:
+  port: 80
+
+
+number:
+# Time 1
+  - platform: template
+    name: Time_${name1}
+    id: time_${id1}
+    optimistic: true
+    min_value: 1
+    max_value: 100000
+    initial_value: $work_time1
+    restore_value: true
+    icon: "mdi:timer-outline"
+    step: 1
+    
+# Time 2
+  - platform: template
+    name: Time_${name2}
+    id: time_${id2}
+    optimistic: true
+    min_value: 1
+    max_value: 100000
+    initial_value: $work_time2
+    restore_value: true
+    icon: "mdi:timer-outline"
+    step: 1
+        
+# Time 3
+  - platform: template
+    name: Time_${name3}
+    id: time_${id3}
+    optimistic: true
+    min_value: 1
+    max_value: 100000
+    initial_value: $work_time3
+    restore_value: true
+    icon: "mdi:timer-outline"
+    step: 1
+
+# Time 4
+  - platform: template
+    name: Time_${name4}
+    id: time_${id4}
+    optimistic: true
+    min_value: 1
+    max_value: 100000
+    initial_value: $work_time3
+    restore_value: true
+    icon: "mdi:timer-outline"
+    step: 1
+    
+sensor:
+  - platform: uptime
+    name: ${plug_name}_Uptime
+    filters:
+     - lambda: return x / 3600 ;
+    unit_of_measurement: "h"
+    accuracy_decimals: 4
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO1 #TX 
+      mode: INPUT_PULLUP
+      inverted: True
+    name: Pulsante_${name1}
+    id: switch_1
+    filters:
+      - delayed_on_off: 100ms
+    on_press:
+      then:
+        - light.toggle: light1
+
+  - platform: gpio
+    pin:
+      number: GPIO3 #RX
+      mode: INPUT_PULLUP
+      inverted: True
+    name: Pulsante_${name2}
+    id: switch_2
+    filters:
+      - delayed_on_off: 100ms
+    on_press:
+      then:
+        - light.toggle: light2
+        
+  - platform: gpio
+    pin:
+      number: GPIO5 #D1 High impedence on reset
+      mode: INPUT_PULLUP
+      inverted: True
+    name: Pulsante_${name3}
+    id: switch_3
+    filters:
+      - delayed_on_off: 100ms
+    on_press:
+      then:
+        - light.toggle: light3
+
+  - platform: gpio
+    pin:
+      number: GPIO0 #D3
+      mode: INPUT_PULLUP
+      inverted: True
+    name: Pulsante_${name4}
+    id: switch_4
+    filters:
+      - delayed_on_off: 100ms
+    on_press:
+      then:
+        - light.toggle: light4
+                
+  - platform: gpio
+    pin:
+      number: GPIO2 #D4  Led
+      mode: INPUT_PULLUP
+      inverted: True
+    name: Pulsante_${name5}
+    id: switch_5
+    filters:
+      - delayed_on_off: 100ms
+    on_multi_click:
+    - timing:
+        - ON for at most 1s
+        - OFF for at most 0.4s
+        - ON for at most 1s
+        - OFF for at most 0.4s
+        - ON for at most 1s
+        - OFF for at most 0.4s        
+        - ON for at most 1s
+        - OFF for at least 0.5s        
+      then:
+#        - logger.log: "Quadruplo Clicked"
+         - light.toggle: light4       
+    - timing:
+        - ON for at most 1s
+        - OFF for at most 0.4s
+        - ON for at most 1s
+        - OFF for at most 0.4s
+        - ON for at most 1s
+        - OFF for at least 0.5s        
+      then:
+#        - logger.log: "Triple Clicked"
+         - light.toggle: light3
+    - timing:
+        - ON for at most 1s
+        - OFF for at most 0.4s        
+        - ON for at most 1s
+        - OFF for at least 0.5s   
+      then:
+#        - logger.log: "Double Clicked"
+        - light.toggle: light2
+    - timing:
+        - ON for at most 1s
+        - OFF for at most 0.4s        
+        - ON for 1s to 2s
+        - OFF for at least 0.5s   
+      then:
+#        - logger.log: "Double Long Clicked"
+         - light.turn_on: light1
+         - light.turn_on: light2
+         - light.turn_on: light3    
+         - light.turn_on: light4      
+    - timing:
+        - ON for 1s to 2s
+        - OFF for at least 0.5s
+      then:
+#        - logger.log: "Single Long Clicked"
+         - light.turn_off: light1
+         - light.turn_off: light2
+         - light.turn_off: light3    
+         - light.turn_off: light4
+    - timing:
+        - ON for 0.1s to 1s
+        - OFF for at least 0.5s
+      then:
+#        - logger.log: "Single Short Clicked"    
+        - light.toggle: light1
+   
+output:
+  - platform: gpio
+#    name: "Luce uno"
+    pin: GPIO14
+    id: relay1
+    inverted: True
+
+  - platform: gpio
+#    name: "Luce due"
+    pin: GPIO12
+    id: relay2
+    inverted: True
+
+  - platform: gpio
+#    name: "Luce tre"
+    pin: GPIO13
+    id: relay3
+    inverted: true
+
+  - platform: gpio
+#    name: "Luce quattro"
+    pin: GPIO04
+    id: relay4
+    inverted: true
+
+light:
+  - platform: binary
+    name: Luce ${name1}
+    output: relay1
+    id: light1
+    on_turn_on:
+    - script.stop: power_off_timer1
+    - script.execute: power_off_timer1
+    on_turn_off:
+    - script.stop: power_off_timer1
+    
+  - platform: binary
+    name: Luce ${name2}
+    output: relay2
+    id: light2
+    on_turn_on:
+    - script.stop: power_off_timer2
+    - script.execute: power_off_timer2
+    on_turn_off:
+    - script.stop: power_off_timer2 
+ 
+  - platform: binary
+    name: Luce ${name3}
+    output: relay3
+    id: light3
+    on_turn_on:
+    - script.stop: power_off_timer3
+    - script.execute: power_off_timer3
+    on_turn_off:
+    - script.stop: power_off_timer3
+
+  - platform: binary
+    name: Luce ${name4}
+    output: relay4
+    id: light4
+    on_turn_on:
+    - script.stop: power_off_timer4
+    - script.execute: power_off_timer4
+    on_turn_off:
+    - script.stop: power_off_timer4
+
+
+#status_led:
+#  pin:
+#    number: GPIO2
+#    inverted: yes
+ 
+
+
+switch:  
+  - platform: template
+    name: Timer ${name1}
+    id: timer1
+    turn_on_action:
+      - switch.template.publish:
+          id: timer1
+          state: ON 
+      - script.stop: power_off_timer1
+      - script.execute: power_off_timer1          
+    turn_off_action:
+      - switch.template.publish:
+          id: timer1
+          state: OFF 
+      - script.stop: power_off_timer1
+      
+  - platform: template
+    name: Timer ${name2}
+    id: timer2
+    turn_on_action:
+      - switch.template.publish:
+          id: timer2
+          state: ON 
+      - script.stop: power_off_timer2
+      - script.execute: power_off_timer2          
+    turn_off_action:
+      - switch.template.publish:
+          id: timer2
+          state: OFF 
+      - script.stop: power_off_timer2
+
+  - platform: template
+    name: Timer ${name3}
+    id: timer3
+    turn_on_action:
+      - switch.template.publish:
+          id: timer3
+          state: ON 
+      - script.stop: power_off_timer3
+      - script.execute: power_off_timer3          
+    turn_off_action:
+      - switch.template.publish:
+          id: timer3
+          state: OFF 
+      - script.stop: power_off_timer3
+
+
+  - platform: template
+    name: Timer ${name4}
+    id: timer4
+    turn_on_action:
+      - switch.template.publish:
+          id: timer4
+          state: ON 
+      - script.stop: power_off_timer4
+      - script.execute: power_off_timer4          
+    turn_off_action:
+      - switch.template.publish:
+          id: timer4
+          state: OFF 
+      - script.stop: power_off_timer4
+
+ 
+ 
+# Scripts
+script:
+  - id: power_off_timer1
+    then:
+      - if:
+          condition:
+            and:
+              - light.is_on: light1
+              - switch.is_on: timer1
+          then: 
+            - delay: !lambda 'return id(time_${id1}).state * 1000;'
+            - light.turn_off: light1
+
+  - id: power_off_timer2
+    then:
+      - if:
+          condition:
+            and:
+              - light.is_on: light2
+              - switch.is_on: timer2
+          then: 
+            - delay: !lambda 'return id(time_${id2}).state * 1000;'
+            - light.turn_off: light2       
+
+
+  - id: power_off_timer3
+    then:
+      - if:
+          condition:
+            and:
+              - light.is_on: light3
+              - switch.is_on: timer3
+          then: 
+            - delay: !lambda 'return id(time_${id3}).state * 1000;'
+            - light.turn_off: light3                   
+            
+
+
+  - id: power_off_timer4
+    then:
+      - if:
+          condition:
+            and:
+              - light.is_on: light4
+              - switch.is_on: timer4
+          then: 
+            - delay: !lambda 'return id(time_${id4}).state * 1000;'
+            - light.turn_off: light4              
